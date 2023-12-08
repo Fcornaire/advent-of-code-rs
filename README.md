@@ -1,6 +1,6 @@
 <img src="./.assets/christmas_ferris.png" width="164">
 
-# 🎄 Advent of Code {year}
+# 🎄 Advent of Code {2023}
 
 Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.rust-lang.org/).
 
@@ -11,12 +11,15 @@ Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.
 
 | Day | Part 1 | Part 2 |
 | :---: | :---: | :---:  |
-| [Day 1](./src/bin/01.rs) | `43.1µs` | `32.9ms` |
-| [Day 2](./src/bin/02.rs) | `166.9µs` | `171.2µs` |
-| [Day 3](./src/bin/03.rs) | `861.3µs` | `2.9ms` |
-| [Day 4](./src/bin/04.rs) | `336.3µs` | `190.5µs` |
+| [Day 1](./src/bin/01.rs) | `36.5µs` | `1.5ms` |
+| [Day 2](./src/bin/02.rs) | `152.6µs` | `162.5µs` |
+| [Day 3](./src/bin/03.rs) | `772.2µs` | `2.3ms` |
+| [Day 4](./src/bin/04.rs) | `294.2µs` | `172.8µs` |
+| [Day 6](./src/bin/06.rs) | `1.9µs` | `201.1ms` |
+| [Day 7](./src/bin/07.rs) | `442.7µs` | `447.1µs` |
+| [Day 8](./src/bin/08.rs) | `2.6s` | `3.5s` |
 
-**Total: 37.57ms**
+**Total: 6307.38ms**
 <!--- benchmarking table --->
 
 ---
@@ -70,7 +73,7 @@ Every [solution](https://github.com/fspoettel/advent-of-code-rust/blob/main/src/
 
 ### Download input & description for a day
 
-> [!IMPORTANT] 
+> [!IMPORTANT]
 > This command requires [installing the aoc-cli crate](#configure-aoc-cli-integration).
 
 ```sh

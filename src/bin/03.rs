@@ -8,17 +8,16 @@ struct Number {
 
 #[derive(Debug)]
 struct Symbol {
-    value: char,
+    _value: char,
     position: (u32, u32),
 }
 
 impl Symbol {
     fn new(value: char, position: (u32, u32)) -> Self {
-        Self { value, position }
-    }
-
-    fn is_a_gear(&self) -> bool {
-        self.value == '*'
+        Self {
+            _value: value,
+            position,
+        }
     }
 
     fn is_adjacent_to_two_different_numbers(&self, numbers: &[Number]) -> (bool, Number) {
@@ -38,7 +37,7 @@ impl Symbol {
                     || (xi == x + 1 && ny == y - 1)
                     || (xi == x - 1 && ny == y + 1)
                 {
-                    adjacent_numbers.push(number.clone());
+                    adjacent_numbers.push(number);
                     break;
                 }
             }

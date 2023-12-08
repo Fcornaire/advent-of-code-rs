@@ -120,8 +120,6 @@ pub fn part_two(input: &str) -> Option<u32> {
 
         let value = digit1 * 10 + digit2;
 
-        println!("ind {ind} : value : {value}");
-
         ind += 1;
         res2 += value;
     }

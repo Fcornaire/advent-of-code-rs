@@ -78,13 +78,11 @@ fn get_solo_distance(input: &str) -> u64 {
         .skip(1)
         .collect::<Vec<&str>>();
 
-    let mut result = String::new(); // String to store the result
+    let mut result = String::new();
 
     for num in data {
         result.push_str(&num.to_string());
     }
-
-    println!("{}", result);
 
     result.parse().unwrap()
 }

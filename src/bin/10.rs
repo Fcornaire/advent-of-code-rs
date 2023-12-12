@@ -1,6 +1,8 @@
 advent_of_code::solution!(10);
-use std::collections::HashSet;
+use itertools::{iproduct, Itertools};
+use std::{collections::HashSet, path};
 use tracing::debug;
+use tracing_subscriber::field::debug;
 
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::VecDeque;
@@ -148,6 +150,122 @@ impl Grid {
 
         visited
     }
+
+    fn get_enclosed_tiles(&self) -> HashSet<(i32, i32)> {
+        let paths = self.get_loop_from_starting_position();
+
+        let mut res: HashSet<(i32, i32)> = HashSet::new();
+        let mut potential_enclosed_x: HashSet<(i32, i32)> = HashSet::new();
+        let mut potential_enclosed_y: HashSet<(i32, i32)> = HashSet::new();
+
+        debug!("Paths: {:?}", paths);
+
+        self.map.iter().enumerate().for_each(|(y, row)| {
+            let mut x = 0;
+            let mut is_in_loop = false;
+
+            while x < row.len() {
+                let current_tile = row[x];
+
+                if paths.contains(&(x as i32, y as i32)) {
+                    let current_pipe = current_tile.get_pipe();
+                    if let Some(pipe) = current_pipe {
+                        if "SLF".contains(pipe.get_char()) {
+                            is_in_loop = true;
+                        }
+
+                        if "SJ7".contains(pipe.get_char()) {
+                            is_in_loop = false;
+                        }
+
+                        if "|".contains(pipe.get_char()) {
+                            is_in_loop = !is_in_loop;
+                        }
+                    }
+                } else {
+                    if is_in_loop {
+                        potential_enclosed_x.insert((x as i32, y as i32));
+                    }
+                }
+
+                x += 1;
+            }
+        });
+
+        for x in 0..self.map[0].len() {
+            let mut y = 0;
+            let mut is_in_loop = false;
+
+            while y < self.map.len() {
+                let current_tile = self.map[y][x];
+
+                if paths.contains(&(x as i32, y as i32)) {
+                    let current_pipe = current_tile.get_pipe();
+                    if let Some(pipe) = current_pipe {
+                        if "SLFJ7-".contains(pipe.get_char()) {
+                            is_in_loop = !is_in_loop;
+                        }
+                    }
+                } else {
+                    if is_in_loop {
+                        potential_enclosed_y.insert((x as i32, y as i32));
+                    }
+                }
+
+                y += 1;
+            }
+        }
+
+        debug!("Potential enclosed x: {:?}", potential_enclosed_x);
+        debug!("Potential enclosed y: {:?}", potential_enclosed_y);
+
+        // get (x, y) that are in both potential_enclosed_x and potential_enclosed_y
+        potential_enclosed_x
+            .intersection(&potential_enclosed_y)
+            .for_each(|(x, y)| {
+                res.insert((*x, *y));
+            });
+
+        debug!("Enclosed tiles: {:?}", res);
+
+        if cfg!(debug_assertions) {
+            self.print_grid(paths.clone(), res.clone());
+        }
+
+        res
+    }
+
+    fn print_grid(&self, paths: HashSet<(i32, i32)>, res: HashSet<(i32, i32)>) {
+        self.map.iter().enumerate().for_each(|(y, row)| {
+            row.iter().enumerate().for_each(|(x, tile)| {
+                print!(
+                    "{}",
+                    match tile {
+                        Tile::Pipe(pipe) => {
+                            if paths.contains(&(x as i32, y as i32)) {
+                                'X'
+                            } else if res.contains(&(x as i32, y as i32)) {
+                                'I'
+                            } else {
+                                ' '
+                            }
+                        }
+                        _ =>
+                            if res.contains(&(x as i32, y as i32)) {
+                                'I'
+                            } else {
+                                '.'
+                            },
+                    }
+                )
+            });
+            println!();
+        });
+    }
+}
+
+fn contains_any<T: Eq + std::hash::Hash>(vec: &[T], set: &HashSet<T>) -> bool {
+    vec.iter().any(|item| set.contains(item))
 }
 
 fn parse_input(input: &str) -> Map {
@@ -181,7 +299,12 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    let grid = Grid::new(parse_input(input));
+
+    let enclosed = grid.get_enclosed_tiles();
+    // debug!("Main loop {:?}", paths);
+
+    Some(enclosed.len() as u32)
 }
 
 #[cfg(test)]
@@ -200,13 +323,25 @@ mod tests {
         tracing::subscriber::set_global_default(subscriber)
             .expect("setting default subscriber failed");
 
-        let result = part_one(&advent_of_code::template::read_file("examples", DAY));
+        let result = part_one(&advent_of_code::template::read_file_part(
+            "examples", DAY, 1,
+        ));
         assert_eq!(result, Some(8));
     }
 
     #[test]
     fn test_part_two() {
-        let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        let subscriber = FmtSubscriber::builder()
+            .with_max_level(Level::TRACE)
+            .pretty()
+            .finish();
+
+        tracing::subscriber::set_global_default(subscriber)
+            .expect("setting default subscriber failed");
+
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 2,
+        ));
+        assert_eq!(result, Some(8));
     }
 }

@@ -40,6 +40,23 @@ macro_rules! solution {
 
         fn main() {
             use advent_of_code::template::runner::*;
+            use tracing::Level;
+            use tracing_subscriber::FmtSubscriber;
+
+            let mut level = Level::TRACE;
+
+            if !cfg!(debug_assertions) {
+                level = Level::INFO;
+            }
+
+            let subscriber = FmtSubscriber::builder()
+                .with_max_level(level)
+                .pretty()
+                .finish();
+
+            tracing::subscriber::set_global_default(subscriber)
+                .expect("setting default subscriber failed");
+
             let input = advent_of_code::template::read_file("inputs", DAY);
             run_part(part_one, &input, DAY, 1);
             run_part(part_two, &input, DAY, 2);

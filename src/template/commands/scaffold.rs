@@ -19,15 +19,35 @@ pub fn part_two(input: &str) -> Option<u32> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tracing::{warn, Level};
+    use tracing_subscriber::FmtSubscriber;
 
     #[test]
     fn test_part_one() {
+        let subscriber = FmtSubscriber::builder()
+            .with_max_level(Level::TRACE)
+            .pretty()
+            .finish();
+
+        if let Err(e) = tracing::subscriber::set_global_default(subscriber) {
+            warn!("setting default subscriber failed: {:?}", e)
+        }
+
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
         assert_eq!(result, None);
     }
 
     #[test]
     fn test_part_two() {
+        let subscriber = FmtSubscriber::builder()
+            .with_max_level(Level::TRACE)
+            .pretty()
+            .finish();
+
+        if let Err(e) = tracing::subscriber::set_global_default(subscriber) {
+            warn!("setting default subscriber failed: {:?}", e)
+        }
+
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
         assert_eq!(result, None);
     }

@@ -2,8 +2,8 @@ name: Update readme ⭐️ progress
 
 on:
     # !Please set a different minute than 51 if you enable this!
-    schedule:
-        - cron: "0 */24 * * *" # Every 24 hours
+    # schedule:
+        # - cron: "0 */24 * * *" # Every 24 hours
     workflow_dispatch:
 
 jobs:
